@@ -5,7 +5,8 @@
       <p>Score 100</p>
     </header>
     <div id="container">
-      <NumberBlock :show="show" :num="num"></NumberBlock>
+      <NumberBlock v-for="i in 16" :key="i" :show="show" :num="num" :ix="slots[i].x" :iy="slots[i].y"></NumberBlock>
+      <!-- <NumberBlock v-for="i in 16" :key="i" :show="show" :num="num" :ix="i * 100" :iy="i * 10"></NumberBlock> -->
     </div>
     <button @click="show = !show">Test Appeaer</button>
     <!-- <button @click="testAppear">Test Move</button> -->
@@ -23,7 +24,9 @@ export default {
   data() {
     return {
       num: Number,
-      show: Boolean
+      show: Boolean,
+      slots: [],
+      emptySlots: []
     }
   },
   methods: {
@@ -45,12 +48,24 @@ export default {
         default:
           break
       }
+    },
+    init() {
+      this.num = 2
+      this.show = true
+      for (let i = 1; i <= 4; i++) {
+        for (let j = 1; j <= 4; j++) {
+          this.slots[(j - 1) * 4 + i] = {
+            x: (j - 1) * 100 + 10,
+            y: (i - 1) * 100 + 10,
+            empty: false
+          }
+        }
+      }
     }
   },
   created() {
     window.addEventListener('keyup', this.move)
-    this.num = 2
-    this.show = true
+    this.init()
   }
 }
 </script>
@@ -83,8 +98,9 @@ body {
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
-  padding-top: 10px;
-  padding-left: 10px;
+  // padding-top: 10px;
+  // padding-left: 10px;
+  position: relative;
 }
 
 button {

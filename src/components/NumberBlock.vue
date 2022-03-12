@@ -1,6 +1,6 @@
 <template>
 <transition name="appear">
-  <div :class="className" v-if="show">{{ num }}</div>
+  <div :class="className" v-if="show" :style="{left: x + 'px', top: y + 'px'}">{{ num }}</div>
 </transition>
 </template>
 
@@ -14,8 +14,12 @@ export default {
     },
     show: {
       typeof: Boolean,
-      default: true
-    }
+      default: true,
+      x: Number,
+      y: Number
+    },
+    ix: Number,
+    iy: Number
   },
   data() {
     return {
@@ -33,6 +37,9 @@ export default {
       default:
         this.className = 'two'
     }
+    this.x = this.ix
+    this.y = this.iy
+    // console.log(this.x, this.y)
   }
 }
 </script>
@@ -48,6 +55,7 @@ div {
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 80px;
+  position: absolute;
 }
 
 .two {
