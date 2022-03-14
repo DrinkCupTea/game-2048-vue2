@@ -58,21 +58,25 @@ export default {
           // console.log(key)
           moved = this.moveToUp()
           this.mergeToUp()
+          this.moveToUp()
           break
         case 'ArrowDown':
           // console.log(key)
           moved = this.moveToBottom()
           this.mergeToBottom()
+          this.moveToBottom()
           break
         case 'ArrowLeft':
           // console.log(key)
           moved = this.moveToLeft()
           this.mergeToLeft()
+          this.moveToLeft()
           break
         case 'ArrowRight':
           // console.log(key)
           moved = this.moveToRight()
           this.mergeToRight()
+          this.moveToRight()
           break
         default:
           return
@@ -81,17 +85,17 @@ export default {
         this.addNumberBlock()
       }
     },
-    setSlotEmpty(from) {
-      this.slotBlocks[from] = {
+    setSlotEmpty(slotId) {
+      this.slotBlocks[slotId] = {
         blockId: '',
         hasBlock: false,
         num: 0
       }
-      this.emptySlots.push(from)
+      this.emptySlots.push(slotId)
     },
-    setSlotFull(from, to) {
-      this.emptySlots = this.emptySlots.filter(id => id !== to)
-      this.slotBlocks[to] = this.slotBlocks[from]
+    setSlotFull(slotFrom, slotTo) {
+      this.emptySlots = this.emptySlots.filter(id => id !== slotTo)
+      this.slotBlocks[slotTo] = this.slotBlocks[slotFrom]
     },
     moveBlock(from, to) {
       this.setSlotFull(from, to)
@@ -175,12 +179,42 @@ export default {
       return moved
     },
     mergeToUp() {
+      for (let i = 0; i < (16 - 4); i++) {
+        if (this.slotBlocks[i].hasBlock && this.slotBlocks[i + 4].hasBlock &&
+        this.slotBlocks[i].num === this.slotBlocks[i + 4].num) {
+          this.removeBlock(i + 4)
+          this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+        }
+      }
     },
     mergeToBottom() {
+      for (let i = 15; i >= 4; i--) {
+        if (this.slotBlocks[i].hasBlock && this.slotBlocks[i - 4].hasBlock &&
+        this.slotBlocks[i].num === this.slotBlocks[i - 4].num) {
+          this.removeBlock(i - 4)
+          this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+        }
+      }
     },
     mergeToLeft() {
+      for (let i = 0; i < 16; i++) {
+        if (i % 4 === 3) continue
+        if (this.slotBlocks[i].hasBlock && this.slotBlocks[i + 1].hasBlock &&
+        this.slotBlocks[i].num === this.slotBlocks[i + 1].num) {
+          this.removeBlock(i + 1)
+          this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+        }
+      }
     },
     mergeToRight() {
+      for (let i = 15; i >= 0; i--) {
+        if (i % 4 === 0) continue
+        if (this.slotBlocks[i].hasBlock && this.slotBlocks[i - 1].hasBlock &&
+        this.slotBlocks[i].num === this.slotBlocks[i - 1].num) {
+          this.removeBlock(i - 1)
+          this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+        }
+      }
     },
     addNumberBlock() {
       if (this.emptySlots.length === 0) {
@@ -201,9 +235,9 @@ export default {
         num: num
       }
     },
-    removeBlock(id) {
-      this.blocks = this.blocks.filter(block => block.slotId !== id)
-      this.emptySlots.push(id)
+    removeBlock(slotId) {
+      this.blocks = this.blocks.filter(block => block.slotId !== slotId)
+      this.setSlotEmpty(slotId)
     }
   },
   created() {
