@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      show: Boolean,
+      shouldAddBlock: Boolean,
       SLOTS_INFO: [],
       blocks: [],
       emptySlots: [],
@@ -52,36 +52,36 @@ export default {
     },
     move(e) {
       const key = e.key
-      let moved = false
+      this.shouldAddBlock = false
       switch (key) {
         case 'ArrowUp':
           // console.log(key)
-          moved = this.moveToUp()
+          this.moveToUp()
           this.mergeToUp()
           this.moveToUp()
           break
         case 'ArrowDown':
           // console.log(key)
-          moved = this.moveToBottom()
+          this.moveToBottom()
           this.mergeToBottom()
           this.moveToBottom()
           break
         case 'ArrowLeft':
           // console.log(key)
-          moved = this.moveToLeft()
+          this.moveToLeft()
           this.mergeToLeft()
           this.moveToLeft()
           break
         case 'ArrowRight':
           // console.log(key)
-          moved = this.moveToRight()
+          this.moveToRight()
           this.mergeToRight()
           this.moveToRight()
           break
         default:
           return
       }
-      if (moved) {
+      if (this.shouldAddBlock) {
         this.addNumberBlock()
       }
     },
@@ -105,11 +105,11 @@ export default {
           block.slotId = to
         }
       })
+      this.shouldAddBlock = true
     },
     moveToUp() {
       // console.log('MOVE TO UP')
       // Start from 0 to ensure bolcks at top moved first
-      let moved = false
       for (let i = 0; i < 16; i++) {
         if (this.slotBlocks[i].hasBlock) {
           let to = i % 4
@@ -118,16 +118,13 @@ export default {
           }
           if (to !== i) {
             this.moveBlock(i, to)
-            moved = true
           }
         }
       }
-      return moved
     },
     moveToBottom() {
       // console.log('MOVE TO BOTTOM')
       // Start from 15 to ensure bolcks at bottom moved first
-      let moved = false
       for (let i = 15; i >= 0; i--) {
         if (this.slotBlocks[i].hasBlock) {
           let to = 12 + i % 4
@@ -136,16 +133,13 @@ export default {
           }
           if (to !== i) {
             this.moveBlock(i, to)
-            moved = true
           }
         }
       }
-      return moved
     },
     moveToLeft() {
       // console.log('MOVE TO LEFT')
       // Start from 0 to ensure bolcks at left moved first
-      let moved = false
       for (let i = 0; i < 16; i++) {
         if (this.slotBlocks[i].hasBlock) {
           let to = Math.floor(i / 4) * 4
@@ -154,16 +148,13 @@ export default {
           }
           if (to !== i) {
             this.moveBlock(i, to)
-            moved = true
           }
         }
       }
-      return moved
     },
     moveToRight() {
       // console.log('MOVE TO RIGHT')
       // Start from 15 to ensure bolcks at right moved first
-      let moved = false
       for (let i = 15; i >= 0; i--) {
         if (this.slotBlocks[i].hasBlock) {
           let to = Math.floor(i / 4) * 4 + 3
@@ -172,11 +163,9 @@ export default {
           }
           if (to !== i) {
             this.moveBlock(i, to)
-            moved = true
           }
         }
       }
-      return moved
     },
     mergeToUp() {
       for (let i = 0; i < (16 - 4); i++) {
@@ -238,6 +227,8 @@ export default {
     removeBlock(slotId) {
       this.blocks = this.blocks.filter(block => block.slotId !== slotId)
       this.setSlotEmpty(slotId)
+      // Should add new block if there has blocks merged
+      this.shouldAddBlock = true
     }
   },
   created() {
