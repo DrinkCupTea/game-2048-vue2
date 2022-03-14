@@ -30,17 +30,25 @@ export default {
       className: String
     }
   },
-  created() {
-    switch (this.num) {
-      case 2:
-        this.className = 'two'
-        break
-      case 4:
-        this.className = 'four'
-        break
-      default:
-        this.className = 'two'
+  watch: {
+    num(newNum) {
+      // console.log(newNum)
+      this.updateClass(newNum)
     }
+  },
+  methods: {
+    updateClass(num) {
+      const classList = ['t-one', 't-two', 't-three', 't-four', 't-five', 't-six', 't-seven', 't-eight', 't-nine', 't-ten', 't-eleven', 't-twelve', 't-thirteen', 't-fourteen']
+      let t = 0
+      while (num > 2) {
+        num /= 2
+        t += 1
+      }
+      this.className = classList[t]
+    }
+  },
+  created() {
+    this.updateClass(this.num)
   }
 }
 </script>
@@ -58,14 +66,6 @@ div {
   line-height: 80px;
   position: absolute;
   transition: 100ms;
-}
-
-.two {
-  background-color: orange;
-}
-
-.four {
-  background-color: yellowgreen;
 }
 
 .appear-enter-active {
@@ -86,4 +86,19 @@ div {
     transform: scale(1);
   }
 }
+
+.t-one      {background-color: orange;}
+.t-two      {background-color: yellowgreen;}
+.t-three    {background-color: red;}
+.t-four     {background-color: blueviolet;}
+.t-five     {background-color: yellow;}
+.t-six      {background-color: orange;}
+.t-seven    {background-color: orange;}
+.t-eight    {background-color: orange;}
+.t-nine     {background-color: orange;}
+.t-ten      {background-color: orange;}
+.t-eleven   {background-color: orange;}
+.t-twelve   {background-color: orange;}
+.t-thirteen {background-color: orange;}
+.t-fourteen {background-color: orange;}
 </style>
