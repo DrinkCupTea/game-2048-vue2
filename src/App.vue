@@ -5,9 +5,9 @@
       <p>Score 100</p>
     </header>
     <div id="container">
-      <NumberBlock v-for="numberBlock in numberBlocks" :key="numberBlock.id" :num="numberBlock.num" :mSlot="slots[numberBlock.slotId]" @click.native="changeSlotId(numberBlock.id)"></NumberBlock>
+      <!-- <NumberBlock v-for="block in blocks" :key="block.id" :num="block.num" :mSlot="SLOTS_INFO[block.slotId]"></NumberBlock> -->
+      <NumberBlock v-for="block in blocks" :key="block.id" :num="slotBlocks[block.slotId].num" :mSlot="SLOTS_INFO[block.slotId]"></NumberBlock>
     </div>
-    <!-- <button @click="addNumberBlock">Add New Block</button> -->
   </div>
 </template>
 
@@ -24,9 +24,10 @@ export default {
   data() {
     return {
       show: Boolean,
-      slots: [],
-      numberBlocks: [],
-      emptySlots: []
+      SLOTS_INFO: [],
+      blocks: [],
+      emptySlots: [],
+      slotBlocks: []
     }
   },
   methods: {
@@ -34,57 +35,68 @@ export default {
       this.show = true
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
-          this.slots.push({
-            id: i * 4 + j,
+          this.SLOTS_INFO.push({
             x: j * 100 + 10,
-            y: i * 100 + 10,
-            isEmpty: true
+            y: i * 100 + 10
           })
         }
       }
       for (let i = 0; i < 16; i++) {
         this.emptySlots.push(i)
+        this.slotBlocks.push({
+          blockId: '',
+          hasBlock: false,
+          num: 0
+        })
       }
     },
     move(e) {
       const key = e.key
+      let moved = false
       switch (key) {
         case 'ArrowUp':
           // console.log(key)
-          this.moveToUp()
-          this.addNumberBlock()
+          moved = this.moveToUp()
+          this.mergeToUp()
           break
         case 'ArrowDown':
           // console.log(key)
-          this.moveToBottom()
-          this.addNumberBlock()
+          moved = this.moveToBottom()
+          this.mergeToBottom()
           break
         case 'ArrowLeft':
           // console.log(key)
-          this.moveToLeft()
-          this.addNumberBlock()
+          moved = this.moveToLeft()
+          this.mergeToLeft()
           break
         case 'ArrowRight':
           // console.log(key)
-          this.moveToRight()
-          this.addNumberBlock()
+          moved = this.moveToRight()
+          this.mergeToRight()
           break
         default:
-          break
+          return
+      }
+      if (moved) {
+        this.addNumberBlock()
       }
     },
-    setSlotEmpty(slotToSetEmpty) {
-      this.slots[slotToSetEmpty].isEmpty = true
-      this.emptySlots.push(slotToSetEmpty)
+    setSlotEmpty(from) {
+      this.slotBlocks[from] = {
+        blockId: '',
+        hasBlock: false,
+        num: 0
+      }
+      this.emptySlots.push(from)
     },
-    setSlotFull(slotToSetFull) {
-      this.slots[slotToSetFull].isEmpty = false
-      this.emptySlots = this.emptySlots.filter(id => id !== slotToSetFull)
+    setSlotFull(from, to) {
+      this.emptySlots = this.emptySlots.filter(id => id !== to)
+      this.slotBlocks[to] = this.slotBlocks[from]
     },
     moveBlock(from, to) {
+      this.setSlotFull(from, to)
       this.setSlotEmpty(from)
-      this.setSlotFull(to)
-      this.numberBlocks.forEach(block => {
+      this.blocks.forEach(block => {
         if (block.slotId === from) {
           block.slotId = to
         }
@@ -92,63 +104,83 @@ export default {
     },
     moveToUp() {
       // console.log('MOVE TO UP')
-      // Start from 15 to ensure bolcks at top moved first
+      // Start from 0 to ensure bolcks at top moved first
+      let moved = false
       for (let i = 0; i < 16; i++) {
-        if (!this.slots[i].isEmpty) {
+        if (this.slotBlocks[i].hasBlock) {
           let to = i % 4
-          while (to < i && !this.slots[to].isEmpty) {
+          while (to < i && this.slotBlocks[to].hasBlock) {
             to += 4
           }
           if (to !== i) {
             this.moveBlock(i, to)
+            moved = true
           }
         }
       }
+      return moved
     },
     moveToBottom() {
       // console.log('MOVE TO BOTTOM')
       // Start from 15 to ensure bolcks at bottom moved first
+      let moved = false
       for (let i = 15; i >= 0; i--) {
-        if (!this.slots[i].isEmpty) {
+        if (this.slotBlocks[i].hasBlock) {
           let to = 12 + i % 4
-          while (to > i && !this.slots[to].isEmpty) {
+          while (to > i && this.slotBlocks[to].hasBlock) {
             to -= 4
           }
           if (to !== i) {
             this.moveBlock(i, to)
+            moved = true
           }
         }
       }
+      return moved
     },
     moveToLeft() {
       // console.log('MOVE TO LEFT')
       // Start from 0 to ensure bolcks at left moved first
+      let moved = false
       for (let i = 0; i < 16; i++) {
-        if (!this.slots[i].isEmpty) {
+        if (this.slotBlocks[i].hasBlock) {
           let to = Math.floor(i / 4) * 4
-          while (to < i && !this.slots[to].isEmpty) {
+          while (to < i && this.slotBlocks[to].hasBlock) {
             to += 1
           }
           if (to !== i) {
             this.moveBlock(i, to)
+            moved = true
           }
         }
       }
+      return moved
     },
     moveToRight() {
       // console.log('MOVE TO RIGHT')
       // Start from 15 to ensure bolcks at right moved first
+      let moved = false
       for (let i = 15; i >= 0; i--) {
-        if (!this.slots[i].isEmpty) {
+        if (this.slotBlocks[i].hasBlock) {
           let to = Math.floor(i / 4) * 4 + 3
-          while (to > i && !this.slots[to].isEmpty) {
+          while (to > i && this.slotBlocks[to].hasBlock) {
             to -= 1
           }
           if (to !== i) {
             this.moveBlock(i, to)
+            moved = true
           }
         }
       }
+      return moved
+    },
+    mergeToUp() {
+    },
+    mergeToBottom() {
+    },
+    mergeToLeft() {
+    },
+    mergeToRight() {
     },
     addNumberBlock() {
       if (this.emptySlots.length === 0) {
@@ -156,16 +188,21 @@ export default {
       }
       const slotId = this.emptySlots[Math.floor(Math.random() * this.emptySlots.length)]
       this.emptySlots = this.emptySlots.filter(id => id !== slotId)
-      this.slots[slotId].isEmpty = false
+      // this.slotBlocks[slotId].hasBlock = true
       const num = Math.random() >= 0.7 ? 4 : 2
-      this.numberBlocks.push({
-        id: uuidv4(),
-        slotId: slotId,
-        num: num
+      const id = uuidv4()
+      this.blocks.push({
+        id: id,
+        slotId: slotId
       })
+      this.slotBlocks[slotId] = {
+        blockId: id,
+        hasBlock: true,
+        num: num
+      }
     },
-    removeNumberBlock(id) {
-      this.numberBlocks = this.numberBlocks.filter(block => block.slotId !== id)
+    removeBlock(id) {
+      this.blocks = this.blocks.filter(block => block.slotId !== id)
       this.emptySlots.push(id)
     }
   },
