@@ -99,12 +99,12 @@ div {
 .t-four     {background-color: rgb(255, 123, 0);}
 .t-five     {background-color: rgb(192, 18, 18);}
 .t-six      {background-color: red;}
-.t-seven    {background-color: rgb(209, 209, 56);}
-.t-eight    {background-color: yellowgreen;}
-.t-nine     {background-color: blueviolet;}
-.t-ten      {background-color: paleturquoise;}
-.t-eleven   {background-color: palegreen;}
-.t-twelve   {background-color: cornflowerblue;}
-.t-thirteen {background-color: greenyellow;}
-.t-fourteen {background-color: gold;}
+.t-seven    {background-color: rgb(209, 209, 56);font-size: 40px;}
+.t-eight    {background-color: yellowgreen;font-size: 40px;}
+.t-nine     {background-color: blueviolet;font-size: 40px;}
+.t-ten      {background-color: paleturquoise;font-size: 33px;}
+.t-eleven   {background-color: palegreen;font-size: 33px;}
+.t-twelve   {background-color: cornflowerblue;font-size: 33px;}
+.t-thirteen {background-color: greenyellow;font-size: 33px;}
+.t-fourteen {background-color: gold;font-size: 33px;}
 </style>
