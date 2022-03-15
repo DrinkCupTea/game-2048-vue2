@@ -33,12 +33,13 @@ export default {
       blocks: [],
       emptySlots: [],
       slotBlocks: [],
-      show: Boolean,
-      score: Number
+      score: Number,
+      gameOver: Boolean
     }
   },
   methods: {
     initData() {
+      this.gameOver = false
       this.score = 0
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
@@ -85,6 +86,8 @@ export default {
           setTimeout(() => {
             this.addNumberBlock()
           }, 100)
+        } else if (this.emptySlots.length === 0 && this.checkGameOver()) {
+          this.showGameOver()
         }
       }, 80)
     },
@@ -210,7 +213,7 @@ export default {
     },
     addNumberBlock() {
       if (this.emptySlots.length === 0) {
-        return
+        return false
       }
       const slotId = this.emptySlots[Math.floor(Math.random() * this.emptySlots.length)]
       this.emptySlots = this.emptySlots.filter(id => id !== slotId)
@@ -230,12 +233,27 @@ export default {
       setTimeout(() => {
         this.blocks[this.blocks.length - 1].show = true
       }, 100)
+      return true
     },
     removeBlock(slotId) {
       this.setSlotEmpty(slotId)
       this.blocks = this.blocks.filter(block => block.slotId !== slotId)
       // Should add new block if there has blocks merged
       this.shouldAddBlock = true
+    },
+    checkGameOver() {
+      for (let i = 0; i < 16; i++) {
+        if (i % 4 !== 3 && this.slotBlocks[i].num === this.slotBlocks[i + 1].num) {
+          return false
+        }
+        if (i + 4 < 16 && this.slotBlocks[i].num === this.slotBlocks[i + 4].num) {
+          return false
+        }
+      }
+      return true
+    },
+    showGameOver() {
+      console.log('Game Over')
     }
   },
   created() {
