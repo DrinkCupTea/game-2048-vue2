@@ -10,7 +10,7 @@
         :key="block.id"
         :num="slotBlocks[block.slotId].num"
         :mSlot="SLOTS_INFO[block.slotId]"
-        @click.native="showBlock(block.blockId)"
+        :show="block.show"
       ></NumberBlock>
     </div>
   </div>
@@ -28,16 +28,17 @@ export default {
   },
   data() {
     return {
-      shouldAddBlock: Boolean,
+      blockAdded: Boolean,
       SLOTS_INFO: [],
       blocks: [],
       emptySlots: [],
-      slotBlocks: []
+      slotBlocks: [],
+      show: Boolean
     }
   },
   methods: {
     initData() {
-      this.show = true
+      this.blockAdded = false
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
           this.SLOTS_INFO.push({
@@ -57,37 +58,44 @@ export default {
     },
     move(e) {
       const key = e.key
-      this.shouldAddBlock = false
+      // Should only add one block for each move
+      this.blockAdded = false
       switch (key) {
         case 'ArrowUp':
-          // console.log(key)
           this.moveToUp()
-          this.mergeToUp()
-          this.moveToUp()
+          setTimeout(() => {
+            this.mergeToUp()
+            this.moveToUp()
+          }, 80)
           break
         case 'ArrowDown':
-          // console.log(key)
           this.moveToBottom()
-          this.mergeToBottom()
-          this.moveToBottom()
+          setTimeout(() => {
+            this.mergeToBottom()
+            this.moveToBottom()
+          }, 80)
           break
         case 'ArrowLeft':
-          // console.log(key)
           this.moveToLeft()
-          this.mergeToLeft()
-          this.moveToLeft()
+          setTimeout(() => {
+            this.mergeToLeft()
+            this.moveToLeft()
+          }, 80)
           break
         case 'ArrowRight':
-          // console.log(key)
           this.moveToRight()
-          this.mergeToRight()
-          this.moveToRight()
+          setTimeout(() => {
+            this.mergeToRight()
+            this.moveToRight()
+          }, 80)
           break
         default:
           return
       }
       if (this.shouldAddBlock) {
-        this.addNumberBlock()
+        setTimeout(() => {
+          this.addNumberBlock()
+        }, 80)
       }
     },
     setSlotEmpty(slotId) {
@@ -110,7 +118,7 @@ export default {
           block.slotId = to
         }
       })
-      this.shouldAddBlock = true
+      this.addNumberBlock()
     },
     moveToUp() {
       // console.log('MOVE TO UP')
@@ -128,7 +136,6 @@ export default {
       }
     },
     moveToBottom() {
-      // console.log('MOVE TO BOTTOM')
       // Start from 15 to ensure bolcks at bottom moved first
       for (let i = 15; i >= 0; i--) {
         if (this.slotBlocks[i].hasBlock) {
@@ -158,7 +165,6 @@ export default {
       }
     },
     moveToRight() {
-      // console.log('MOVE TO RIGHT')
       // Start from 15 to ensure bolcks at right moved first
       for (let i = 15; i >= 0; i--) {
         if (this.slotBlocks[i].hasBlock) {
@@ -211,9 +217,10 @@ export default {
       }
     },
     addNumberBlock() {
-      if (this.emptySlots.length === 0) {
+      if (this.emptySlots.length === 0 || this.blockAdded) {
         return
       }
+      this.blockAdded = true
       const slotId = this.emptySlots[Math.floor(Math.random() * this.emptySlots.length)]
       this.emptySlots = this.emptySlots.filter(id => id !== slotId)
       // this.slotBlocks[slotId].hasBlock = true
@@ -221,19 +228,23 @@ export default {
       const id = uuidv4()
       this.blocks.push({
         id: id,
-        slotId: slotId
+        slotId: slotId,
+        show: false
       })
       this.slotBlocks[slotId] = {
         blockId: id,
         hasBlock: true,
         num: num
       }
+      setTimeout(() => {
+        this.blocks[this.blocks.length - 1].show = true
+      }, 100)
     },
     removeBlock(slotId) {
-      this.blocks = this.blocks.filter(block => block.slotId !== slotId)
       this.setSlotEmpty(slotId)
+      this.blocks = this.blocks.filter(block => block.slotId !== slotId)
       // Should add new block if there has blocks merged
-      this.shouldAddBlock = true
+      this.addNumberBlock()
     }
   },
   created() {

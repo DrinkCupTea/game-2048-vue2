@@ -1,8 +1,11 @@
 <template>
-  <transition name="appear">
+  <transition
+    name="appear"
+  >
     <div
       :class="className"
       :style="{left: mSlot.x + 'px', top: mSlot.y + 'px'}"
+      v-if="show"
     >{{ num }}</div>
   </transition>
 </template>
@@ -72,7 +75,7 @@ div {
 }
 
 .appear-enter-active {
-  animation: appear 100ms ease-in-out;
+  animation: appear 150ms ease-in-out;
 }
 
 @keyframes appear {
