@@ -5,6 +5,7 @@
       <p id="score">Score: {{ score }}</p>
     </header>
     <div id="container">
+      <div id="shade" v-if="gameOver">GAME OVER</div>
       <NumberBlock
         v-for="block in blocks"
         :key="block.id"
@@ -13,6 +14,11 @@
         :show="block.show"
       ></NumberBlock>
     </div>
+    <button
+      id="new-game-button"
+      v-if="gameOver"
+      @click="newGame"
+    >New Game</button>
   </div>
 </template>
 
@@ -41,6 +47,8 @@ export default {
     initData() {
       this.gameOver = false
       this.score = 0
+      this.blocks = []
+      this.slotBlocks = []
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
           this.SLOTS_INFO.push({
@@ -59,6 +67,9 @@ export default {
       }
     },
     move(e) {
+      if (this.gameOver) {
+        return
+      }
       const key = e.key
       // Should only add one block for each move
       this.shouldAddBlock = false
@@ -85,9 +96,10 @@ export default {
         if (this.shouldAddBlock) {
           setTimeout(() => {
             this.addNumberBlock()
+            if (this.emptySlots.length === 0 && this.checkGameOver()) {
+              this.gameOver = true
+            }
           }, 100)
-        } else if (this.emptySlots.length === 0 && this.checkGameOver()) {
-          this.showGameOver()
         }
       }, 80)
     },
@@ -252,8 +264,9 @@ export default {
       }
       return true
     },
-    showGameOver() {
-      console.log('Game Over')
+    newGame() {
+      this.initData()
+      this.addNumberBlock()
     }
   },
   created() {
@@ -304,8 +317,35 @@ body {
   position: relative;
 }
 
-button {
+#shade {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background-color: rgba($color: #333333, $alpha: 0.8);
+  border-radius: 10px;
+  z-index: 99;
+  color: white;
   text-align: center;
+  line-height: 360px;
+  font-size: 42px;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#new-game-button {
+  display: block;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  color: white;
+  font-size: 21px;
+  font-weight: bold;
+  text-align: center;
+  background-color: transparent;
+  border-width: 10px;
+  border-radius: 10px;
+  border-color: white;
 }
 
 </style>
