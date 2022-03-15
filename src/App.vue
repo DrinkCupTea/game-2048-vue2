@@ -5,8 +5,13 @@
       <p>Score 100</p>
     </header>
     <div id="container">
-      <!-- <NumberBlock v-for="block in blocks" :key="block.id" :num="block.num" :mSlot="SLOTS_INFO[block.slotId]"></NumberBlock> -->
-      <NumberBlock v-for="block in blocks" :key="block.id" :num="slotBlocks[block.slotId].num" :mSlot="SLOTS_INFO[block.slotId]"></NumberBlock>
+      <NumberBlock
+        v-for="block in blocks"
+        :key="block.id"
+        :num="slotBlocks[block.slotId].num"
+        :mSlot="SLOTS_INFO[block.slotId]"
+        @click.native="showBlock(block.blockId)"
+      ></NumberBlock>
     </div>
   </div>
 </template>

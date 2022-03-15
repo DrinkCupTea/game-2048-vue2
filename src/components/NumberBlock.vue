@@ -1,7 +1,10 @@
 <template>
-<transition name="appear">
-  <div :class="className" :style="{left: mSlot.x + 'px', top: mSlot.y + 'px'}">{{ num }}</div>
-</transition>
+  <transition name="appear">
+    <div
+      :class="className"
+      :style="{left: mSlot.x + 'px', top: mSlot.y + 'px'}"
+    >{{ num }}</div>
+  </transition>
 </template>
 
 <script>
