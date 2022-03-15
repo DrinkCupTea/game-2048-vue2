@@ -279,7 +279,7 @@ body {
 #container {
   width: 400px;
   height: 400px;
-  background-color: rgba($color: #EEEEEE, $alpha: 0.7);
+  background-color: rgba($color: #CCCCCC, $alpha: 0.7);
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;

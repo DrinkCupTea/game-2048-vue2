@@ -93,18 +93,18 @@ div {
   }
 }
 
-.t-one      {background-color: orange;}
-.t-two      {background-color: yellowgreen;}
-.t-three    {background-color: red;}
-.t-four     {background-color: blueviolet;}
-.t-five     {background-color: yellow;}
-.t-six      {background-color: orange;}
-.t-seven    {background-color: orange;}
-.t-eight    {background-color: orange;}
-.t-nine     {background-color: orange;}
-.t-ten      {background-color: orange;}
-.t-eleven   {background-color: orange;}
-.t-twelve   {background-color: orange;}
-.t-thirteen {background-color: orange;}
-.t-fourteen {background-color: orange;}
+.t-one      {background-color: rgb(163, 135, 79);}
+.t-two      {background-color: rgb(175, 139, 70);}
+.t-three    {background-color: rgb(248, 175, 39);}
+.t-four     {background-color: rgb(255, 123, 0);}
+.t-five     {background-color: rgb(192, 18, 18);}
+.t-six      {background-color: red;}
+.t-seven    {background-color: rgb(209, 209, 56);}
+.t-eight    {background-color: yellowgreen;}
+.t-nine     {background-color: blueviolet;}
+.t-ten      {background-color: paleturquoise;}
+.t-eleven   {background-color: palegreen;}
+.t-twelve   {background-color: cornflowerblue;}
+.t-thirteen {background-color: greenyellow;}
+.t-fourteen {background-color: gold;}
 </style>
