@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      blockAdded: Boolean,
+      shouldAddBlock: Boolean,
       SLOTS_INFO: [],
       blocks: [],
       emptySlots: [],
@@ -38,7 +38,6 @@ export default {
   },
   methods: {
     initData() {
-      this.blockAdded = false
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
           this.SLOTS_INFO.push({
@@ -59,44 +58,33 @@ export default {
     move(e) {
       const key = e.key
       // Should only add one block for each move
-      this.blockAdded = false
+      this.shouldAddBlock = false
       switch (key) {
         case 'ArrowUp':
-          this.moveToUp()
-          setTimeout(() => {
-            this.mergeToUp()
-            this.moveToUp()
-          }, 80)
+          this.moveAction(this.moveToUp, this.mergeToUp)
           break
         case 'ArrowDown':
-          this.moveToBottom()
-          setTimeout(() => {
-            this.mergeToBottom()
-            this.moveToBottom()
-          }, 80)
+          this.moveAction(this.moveToBottom, this.mergeToBottom)
           break
         case 'ArrowLeft':
-          this.moveToLeft()
-          setTimeout(() => {
-            this.mergeToLeft()
-            this.moveToLeft()
-          }, 80)
+          this.moveAction(this.moveToLeft, this.mergeToLeft)
           break
         case 'ArrowRight':
-          this.moveToRight()
-          setTimeout(() => {
-            this.mergeToRight()
-            this.moveToRight()
-          }, 80)
+          this.moveAction(this.moveToRight, this.mergeToRight)
           break
-        default:
-          return
       }
-      if (this.shouldAddBlock) {
-        setTimeout(() => {
-          this.addNumberBlock()
-        }, 80)
-      }
+    },
+    moveAction(moveFunction, mergeFunction) {
+      moveFunction()
+      setTimeout(() => {
+        mergeFunction()
+        moveFunction()
+        if (this.shouldAddBlock) {
+          setTimeout(() => {
+            this.addNumberBlock()
+          }, 100)
+        }
+      }, 80)
     },
     setSlotEmpty(slotId) {
       this.slotBlocks[slotId] = {
@@ -118,10 +106,9 @@ export default {
           block.slotId = to
         }
       })
-      this.addNumberBlock()
+      this.shouldAddBlock = true
     },
     moveToUp() {
-      // console.log('MOVE TO UP')
       // Start from 0 to ensure bolcks at top moved first
       for (let i = 0; i < 16; i++) {
         if (this.slotBlocks[i].hasBlock) {
@@ -150,7 +137,6 @@ export default {
       }
     },
     moveToLeft() {
-      // console.log('MOVE TO LEFT')
       // Start from 0 to ensure bolcks at left moved first
       for (let i = 0; i < 16; i++) {
         if (this.slotBlocks[i].hasBlock) {
@@ -217,10 +203,9 @@ export default {
       }
     },
     addNumberBlock() {
-      if (this.emptySlots.length === 0 || this.blockAdded) {
+      if (this.emptySlots.length === 0) {
         return
       }
-      this.blockAdded = true
       const slotId = this.emptySlots[Math.floor(Math.random() * this.emptySlots.length)]
       this.emptySlots = this.emptySlots.filter(id => id !== slotId)
       // this.slotBlocks[slotId].hasBlock = true
@@ -244,7 +229,7 @@ export default {
       this.setSlotEmpty(slotId)
       this.blocks = this.blocks.filter(block => block.slotId !== slotId)
       // Should add new block if there has blocks merged
-      this.addNumberBlock()
+      this.shouldAddBlock = true
     }
   },
   created() {
