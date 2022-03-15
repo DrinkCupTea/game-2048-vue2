@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <header id="header">
-      <p>Start Game</p>
-      <p>Score 100</p>
+      <p id="title">2048</p>
+      <p id="score">Score: {{ score }}</p>
     </header>
     <div id="container">
       <NumberBlock
@@ -33,11 +33,13 @@ export default {
       blocks: [],
       emptySlots: [],
       slotBlocks: [],
-      show: Boolean
+      show: Boolean,
+      score: Number
     }
   },
   methods: {
     initData() {
+      this.score = 0
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
           this.SLOTS_INFO.push({
@@ -170,6 +172,7 @@ export default {
         this.slotBlocks[i].num === this.slotBlocks[i + 4].num) {
           this.removeBlock(i + 4)
           this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+          this.score += this.slotBlocks[i].num
         }
       }
     },
@@ -179,6 +182,7 @@ export default {
         this.slotBlocks[i].num === this.slotBlocks[i - 4].num) {
           this.removeBlock(i - 4)
           this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+          this.score += this.slotBlocks[i].num
         }
       }
     },
@@ -189,6 +193,7 @@ export default {
         this.slotBlocks[i].num === this.slotBlocks[i + 1].num) {
           this.removeBlock(i + 1)
           this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+          this.score += this.slotBlocks[i].num
         }
       }
     },
@@ -199,6 +204,7 @@ export default {
         this.slotBlocks[i].num === this.slotBlocks[i - 1].num) {
           this.removeBlock(i - 1)
           this.slotBlocks[i].num = this.slotBlocks[i].num * 2
+          this.score += this.slotBlocks[i].num
         }
       }
     },
@@ -256,8 +262,17 @@ body {
 #header {
   p {
     color: white;
-    font-size: 35px;
     text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #title {
+    font-size: 70px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  #score {
+    font-size: 50px;
+    margin-top: 10px;
   }
 }
 
